@@ -18,6 +18,8 @@ read -p "선택 (1, 2): " option
 
 if [ "$option" == "1" ]; then
     echo "heurist 노드 새로 설치를 선택했습니다."
+
+    HOME=$(eval echo "~$(whoami)")
     
     echo -e "${YELLOW}NVIDIA 드라이버 설치 옵션을 선택하세요:${NC}"
     echo -e "1: 일반 그래픽카드 (RTX, GTX 시리즈) 드라이버 설치"
@@ -144,6 +146,8 @@ if [ "$option" == "1" ]; then
 
 elif [ "$option" == "2" ]; then
     echo "kuzco 노드를 제거를 선택했습니다."
+
+    HOME=$(eval echo "~$(whoami)")
 
     # miner-release 디렉토리 제거
     if [ -d "$HOME/miner-release" ]; then
