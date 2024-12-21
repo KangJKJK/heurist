@@ -144,6 +144,12 @@ if [ "$option" == "1" ]; then
         # .env 파일에 지갑 주소 저장
         echo "MINER_ID_0=$wallet_address" > "$USER_HOME/miner-release/.env"
 
+        # .env 파일을 /root/.env로 복사
+        sudo cp "$USER_HOME/miner-release/.env" /root/.env
+
+        # /root/.env 파일에 권한 설정
+        sudo chmod +w /root/.env
+
         # 마이너 실행
         python3 sd-miner.py
         chmod +x "$USER_HOME/miner-release/llm-miner-starter.sh"
