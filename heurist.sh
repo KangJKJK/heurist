@@ -6,7 +6,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # 색상 초기화
 
 # 현재 사용자의 홈 디렉토리 감지
-HOME=$(eval echo "~$(whoami)")
+USER_HOME=$(eval echo "~$(whoami)")
 
 # 초기 선택 메뉴
 echo -e "${YELLOW}옵션을 선택하세요:${NC}"
@@ -19,7 +19,7 @@ read -p "선택 (1, 2): " option
 if [ "$option" == "1" ]; then
     echo "heurist 노드 새로 설치를 선택했습니다."
 
-    HOME=$(eval echo "~$(whoami)")
+    USER_HOME=$(eval echo "~$(whoami)")
     
     echo -e "${YELLOW}NVIDIA 드라이버 설치 옵션을 선택하세요:${NC}"
     echo -e "1: 일반 그래픽카드 (RTX, GTX 시리즈) 드라이버 설치"
@@ -107,19 +107,20 @@ if [ "$option" == "1" ]; then
         git clone https://github.com/heurist-network/miner-release.git
 
         # 작업공간 이동
-        cd "$HOME/miner-release"
+        cd "$USER_HOME/miner-release"
 
         # 필수 패키지 설치
-        sudo apt update
-        sudo apt install -y wget curl bzip2
+        sudo apt install -y software-properties-common
+        sudo add-apt-repository -y ppa:deadsnakes/ppa
+        sudo apt update && sudo apt install -y python3.8-venv jq wget curl bzip2
 
         # Python 설치
         sudo apt install -y python3
 
         # Miniconda 설치
         wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
-        bash ~/miniconda.sh -b -p $HOME/miniconda
-        export PATH="$HOME/miniconda/bin:$PATH"
+        bash ~/miniconda.sh -b -p $USER_HOME/miniconda
+        export PATH="$USER_HOME/miniconda/bin:$PATH"
         source ~/.bashrc
 
         # conda 초기화
@@ -136,23 +137,27 @@ if [ "$option" == "1" ]; then
         # 사용자에게 지갑 주소 입력 받기
         read -p "마이너로 사용할 지갑 주소를 입력하세요: " wallet_address
 
-        # .env 파일에 저장
-        echo "MINER_ID_0=$wallet_address" > .env
+        # .env 파일 생성 및 권한 설정
+        touch "$USER_HOME/miner-release/.env"
+        chmod +w "$USER_HOME/miner-release/.env"
+
+        # .env 파일에 지갑 주소 저장
+        echo "MINER_ID_0=$wallet_address" > "$USER_HOME/miner-release/.env"
 
         # 마이너 실행
         python3 sd-miner.py
-        chmod +x llm-miner-starter.sh
+        chmod +x "$USER_HOME/miner-release/llm-miner-starter.sh"
         ./llm-miner-starter.sh dolphin-2.9-llama3-8b --miner-id-index 0 --port 8000 --gpu-ids 0
 
 elif [ "$option" == "2" ]; then
     echo "kuzco 노드를 제거를 선택했습니다."
 
-    HOME=$(eval echo "~$(whoami)")
+    USER_HOME=$(eval echo "~$(whoami)")
 
     # miner-release 디렉토리 제거
-    if [ -d "$HOME/miner-release" ]; then
+    if [ -d "$USER_HOME/miner-release" ]; then
         echo "miner-release 디렉토리를 제거합니다..."
-        rm -rf "$HOME/miner-release"
+        rm -rf "$USER_HOME/miner-release"
         echo "miner-release 디렉토리가 제거되었습니다."
     else
         echo "miner-release 디렉토리가 존재하지 않습니다."
