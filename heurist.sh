@@ -5,6 +5,9 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # 색상 초기화
 
+# 현재 사용자의 홈 디렉토리 감지
+HOME=$(eval echo "~$(whoami)")
+
 # 초기 선택 메뉴
 echo -e "${YELLOW}옵션을 선택하세요:${NC}"
 echo -e "${GREEN}1: heurist 노드 설치${NC}"
@@ -14,7 +17,7 @@ echo -e "${RED}대시보드사이트:https://www.heurist.ai/mining${NC}"
 read -p "선택 (1, 2): " option
 
 if [ "$option" == "1" ]; then
-    echo "kuzco 노드 새로 설치를 선택했습니다."
+    echo "heurist 노드 새로 설치를 선택했습니다."
     
     echo -e "${YELLOW}NVIDIA 드라이버 설치 옵션을 선택하세요:${NC}"
     echo -e "1: 일반 그래픽카드 (RTX, GTX 시리즈) 드라이버 설치"
