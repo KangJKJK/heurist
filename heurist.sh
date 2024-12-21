@@ -125,6 +125,7 @@ if [ "$option" == "1" ]; then
         conda activate heurist-miner
 
         # requirements.txt 파일을 통한 패키지 설치
+        cd "$HOME/miner-release"
         pip install -r requirements.txt
 
         # 사용자에게 지갑 주소 입력 받기
